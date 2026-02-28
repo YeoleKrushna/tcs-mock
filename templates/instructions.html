@@ -1,0 +1,147 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Instructions – TCS NQT 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#0a1628;--blue:#1a56db;--accent:#00c2ff;--gold:#f0a500;--white:#fff;--grey:#8a99b3;--surface:#111d35;--border:#1e3256;--green:#10b981;--red:#ef4444}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Outfit',sans-serif;background:var(--navy);min-height:100vh;color:var(--white)}
+header{background:rgba(10,22,40,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 20px;height:58px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.hdr-brand{display:flex;align-items:center;gap:10px}
+.hdr-icon{width:32px;height:32px;background:linear-gradient(135deg,var(--blue),var(--accent));border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px}
+.hdr-title{font-size:15px;font-weight:700}
+.hdr-user{font-size:12px;color:var(--grey)}.hdr-user span{color:var(--accent);font-weight:600}
+.page-wrap{max-width:900px;margin:0 auto;padding:28px 16px 60px}
+.page-title{font-size:26px;font-weight:800;margin-bottom:5px}.page-title span{color:var(--accent)}
+.page-sub{font-size:13px;color:var(--grey);margin-bottom:28px}
+.sections-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:28px}
+.sec-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;position:relative;overflow:hidden}
+.sec-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--blue),var(--accent))}
+.sec-label{font-size:10px;font-weight:600;color:var(--grey);text-transform:uppercase;letter-spacing:.7px;margin-bottom:5px}
+.sec-name{font-size:14px;font-weight:700;margin-bottom:10px}
+.sec-meta{display:flex;gap:14px}
+.sec-stat{font-size:11px;color:var(--grey)}.sec-stat strong{color:var(--white);font-size:15px;font-weight:700}
+.rules-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:28px}
+@media(max-width:600px){.rules-grid{grid-template-columns:1fr}}
+.rule-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px}
+.rule-box h3{font-size:13px;font-weight:700;margin-bottom:10px}
+.rule-box ul{list-style:none;display:flex;flex-direction:column;gap:6px}
+.rule-box li{font-size:12px;color:var(--grey);display:flex;align-items:flex-start;gap:7px;line-height:1.5}
+.rule-box li::before{content:'›';color:var(--accent);font-size:14px;font-weight:700;line-height:1.2;flex-shrink:0}
+.warn-box{background:rgba(240,165,0,.07);border-color:rgba(240,165,0,.2)}.warn-box h3{color:var(--gold)}
+.danger-box{background:rgba(239,68,68,.06);border-color:rgba(239,68,68,.18)}.danger-box h3{color:var(--red)}
+.camera-section{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:22px;margin-bottom:24px;display:flex;align-items:flex-start;gap:20px}
+.cam-preview{flex-shrink:0;width:150px;height:110px;background:var(--navy);border-radius:9px;border:2px solid var(--border);overflow:hidden;position:relative;display:flex;align-items:center;justify-content:center}
+#camVideo{width:100%;height:100%;object-fit:cover;display:none}
+.cam-placeholder{text-align:center;color:var(--grey);font-size:11px}
+.cam-badge{position:absolute;bottom:5px;right:5px;background:rgba(16,185,129,.2);border:1px solid rgba(16,185,129,.35);border-radius:20px;padding:2px 7px;font-size:9px;font-weight:600;color:var(--green);display:none;align-items:center;gap:3px}
+.cam-badge .dot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:blink 1s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+.cam-info h3{font-size:15px;font-weight:700;margin-bottom:5px}
+.cam-info p{font-size:12px;color:var(--grey);line-height:1.6;margin-bottom:12px}
+.btn-cam{padding:9px 18px;background:linear-gradient(135deg,var(--blue),var(--accent));border:none;border-radius:7px;color:#fff;font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;cursor:pointer}
+.start-section{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px}
+.checkbox-row{display:flex;align-items:flex-start;gap:10px;margin-bottom:18px;cursor:pointer}
+.checkbox-row input[type=checkbox]{width:16px;height:16px;margin-top:3px;accent-color:var(--blue);flex-shrink:0}
+.checkbox-row span{font-size:13px;color:var(--grey);line-height:1.6}
+.checkbox-row span strong{color:var(--white)}
+.btn-start{padding:13px 44px;background:linear-gradient(135deg,var(--green),#059669);border:none;border-radius:9px;color:#fff;font-family:'Outfit',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all .2s;box-shadow:0 4px 18px rgba(16,185,129,.3)}
+.btn-start:hover:not(:disabled){transform:translateY(-2px)}
+.btn-start:disabled{opacity:.4;cursor:not-allowed}
+.cam-note{font-size:11px;color:rgba(239,68,68,.8);margin-top:8px;display:none}
+footer{text-align:center;margin-top:32px;font-size:11px;color:var(--grey)}
+footer span{color:var(--accent);font-weight:600}
+</style></head><body>
+<header>
+  <div class="hdr-brand"><div class="hdr-icon">T</div><div class="hdr-title">TCS NQT 2026</div></div>
+  <div class="hdr-user">Welcome, <span>{{ user_name }}</span></div>
+</header>
+<div class="page-wrap">
+  <div class="page-title">Exam <span>Instructions</span></div>
+  <div class="page-sub">Read all instructions carefully before starting the exam.</div>
+  <div class="sections-grid">
+    {% for s in sections %}
+    <div class="sec-card">
+      <div class="sec-label">Section {{ loop.index }}</div>
+      <div class="sec-name">{{ s.name }}</div>
+      <div class="sec-meta"><div class="sec-stat"><strong>{{ s.questions }}</strong> Qs</div><div class="sec-stat"><strong>{{ s.time }}</strong> Min</div></div>
+    </div>
+    {% endfor %}
+  </div>
+  <div class="rules-grid">
+    <div class="rule-box"><h3>📋 General Rules</h3><ul>
+      <li>Total exam duration is 100 minutes</li><li>Each section has a separate timer</li>
+      <li>Questions are auto-saved on selection</li><li>Navigate freely within a section</li>
+      <li>Section switching is NOT allowed</li><li>Back button is disabled during exam</li>
+      <li>Internet disconnection triggers an alert</li>
+    </ul></div>
+    <div class="rule-box"><h3>📊 Marking Scheme</h3><ul>
+      <li>Each correct answer: +1 mark</li><li>Wrong/unattempted: 0 marks</li>
+      <li>No negative marking</li><li>MCQ: Select one option (A/B/C/D)</li>
+      <li>Fill-in-blank: Type exact answer</li><li>Use "Clear Response" to deselect</li>
+      <li>Mark for Review and revisit anytime</li>
+    </ul></div>
+    <div class="rule-box warn-box"><h3>⚠ Proctoring Rules</h3><ul>
+      <li>Camera and microphone are required</li><li>Fullscreen mode is mandatory</li>
+      <li>Do not switch tabs or windows</li><li>Exiting fullscreen = violation</li>
+      <li>First violation: Warning displayed</li><li>Second violation: Exam auto-submitted</li>
+      <li>You are being live-monitored</li>
+    </ul></div>
+    <div class="rule-box danger-box"><h3>🚫 Prohibited Actions</h3><ul>
+      <li>Right-click is disabled</li><li>Copy / Paste / Cut is disabled</li>
+      <li>Text selection is disabled</li><li>Dev Tools (F12) is blocked</li>
+      <li>Do not open any external website</li><li>Do not use any unfair means</li>
+      <li>All violations are logged permanently</li>
+    </ul></div>
+  </div>
+  <div class="camera-section">
+    <div class="cam-preview">
+      <video id="camVideo" autoplay muted playsinline></video>
+      <div class="cam-placeholder" id="camPlaceholder"><div style="font-size:28px;margin-bottom:5px">📷</div><div>Camera<br>not active</div></div>
+      <div class="cam-badge" id="camBadge"><div class="dot"></div>Live</div>
+    </div>
+    <div class="cam-info">
+      <h3>Camera & Microphone Required</h3>
+      <p>Your exam session will be live-monitored. Click below to enable camera and microphone access. This is mandatory to start the exam.</p>
+      <button class="btn-cam" id="btnCamera" onclick="requestCamera()">🎥 Enable Camera & Microphone</button>
+      <div id="camStatus" style="margin-top:9px;font-size:12px;color:var(--grey)"></div>
+    </div>
+  </div>
+  <div class="start-section">
+    <label class="checkbox-row">
+      <input type="checkbox" id="agreeCheck">
+      <span>I have read all instructions. I agree to abide by the exam rules and understand that violations may result in <strong>automatic exam submission</strong>. I confirm I am taking this exam <strong>fairly and honestly</strong>.</span>
+    </label>
+    <button class="btn-start" id="btnStart" disabled onclick="startExam()">Start Examination →</button>
+    <div class="cam-note" id="camNote">⚠ Camera permission is required to start the exam.</div>
+  </div>
+  <footer>© 2026 TCS NQT Online Assessment Platform &nbsp;·&nbsp; Made By <span>KRUSHNA YEOLE</span> &nbsp;·&nbsp; All Rights Reserved</footer>
+</div>
+<script>
+let cameraGranted=false;
+document.getElementById('agreeCheck').addEventListener('change',updateBtn);
+function updateBtn(){
+  const ok=document.getElementById('agreeCheck').checked;
+  document.getElementById('btnStart').disabled=!ok;
+  document.getElementById('camNote').style.display=(!cameraGranted&&ok)?'block':'none';
+}
+async function requestCamera(){
+  try{
+    const stream=await navigator.mediaDevices.getUserMedia({video:true,audio:true});
+    const v=document.getElementById('camVideo');v.srcObject=stream;v.style.display='block';
+    document.getElementById('camPlaceholder').style.display='none';
+    document.getElementById('camBadge').style.display='flex';
+    document.getElementById('camStatus').innerHTML='<span style="color:#10b981">✓ Camera & microphone active</span>';
+    document.getElementById('btnCamera').textContent='✓ Camera Active';
+    document.getElementById('btnCamera').style.background='linear-gradient(135deg,#10b981,#059669)';
+    cameraGranted=true;updateBtn();window._examStream=stream;
+  }catch(e){document.getElementById('camStatus').innerHTML='<span style="color:#ef4444">✗ Permission denied. Camera required.</span>';}
+}
+function startExam(){
+  if(!cameraGranted){document.getElementById('camNote').style.display='block';return;}
+  const el=document.documentElement;
+  if(el.requestFullscreen) el.requestFullscreen().then(()=>{window.location='/exam';}).catch(()=>{window.location='/exam';});
+  else window.location='/exam';
+}
+</script>
+</body></html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Questions – {{ sec_info.name }} – Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#0a1628;--blue:#1a56db;--accent:#00c2ff;--gold:#f0a500;--white:#fff;--grey:#8a99b3;--surface:#111d35;--border:#1e3256;--green:#10b981;--red:#ef4444}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Outfit',sans-serif;background:var(--navy);min-height:100vh;color:var(--white)}
+a{text-decoration:none;color:inherit}
+header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 20px;height:54px;display:flex;align-items:center;justify-content:space-between}
+.hdr-brand{display:flex;align-items:center;gap:10px}
+.hdr-icon{width:32px;height:32px;background:linear-gradient(135deg,var(--blue),var(--accent));border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px}
+.content{max-width:1100px;margin:0 auto;padding:24px 16px 60px}
+.page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px}
+.page-title{font-size:20px;font-weight:800}
+.section-tabs{display:flex;gap:6px;margin-bottom:20px;flex-wrap:wrap}
+.stab{padding:7px 14px;border-radius:7px;font-size:12px;font-weight:600;border:1px solid var(--border);color:var(--grey);cursor:pointer;transition:all .2s}
+.stab:hover,.stab.active{background:rgba(26,86,219,.15);border-color:var(--blue);color:var(--accent)}
+.flash{padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:14px}
+.flash-success{background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.25);color:#6ee7b7}
+.flash-error{background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.25);color:#fca5a5}
+.table-wrap{overflow-x:auto;background:var(--surface);border:1px solid var(--border);border-radius:12px}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{text-align:left;padding:10px 14px;color:var(--grey);font-weight:600;font-size:10px;text-transform:uppercase;letter-spacing:.6px;border-bottom:1px solid var(--border)}
+td{padding:10px 14px;border-bottom:1px solid rgba(30,50,86,.35);vertical-align:middle}
+tr:last-child td{border:none}
+tr:hover td{background:rgba(255,255,255,.018)}
+.q-text{max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px}
+.badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600}
+.badge-blue{background:rgba(26,86,219,.2);color:var(--accent)}
+.badge-green{background:rgba(16,185,129,.15);color:var(--green)}
+.correct-badge{padding:2px 8px;border-radius:8px;font-size:11px;font-weight:700;background:rgba(16,185,129,.2);color:var(--green)}
+.btn-sm{padding:5px 10px;border-radius:6px;font-family:'Outfit',sans-serif;font-size:11px;font-weight:600;cursor:pointer;border:none;transition:all .2s;display:inline-block}
+.btn-blue{background:rgba(26,86,219,.2);color:var(--accent);border:1px solid rgba(26,86,219,.3)}
+.btn-blue:hover{background:var(--blue);color:#fff}
+.btn-red{background:rgba(239,68,68,.12);color:#f87171;border:1px solid rgba(239,68,68,.2)}
+.btn-red:hover{background:var(--red);color:#fff}
+.btn-gold{background:rgba(240,165,0,.12);color:var(--gold);border:1px solid rgba(240,165,0,.2)}
+.btn-primary{padding:9px 20px;background:linear-gradient(135deg,var(--blue),var(--accent));border:none;border-radius:8px;color:#fff;font-family:'Outfit',sans-serif;font-size:13px;font-weight:700;cursor:pointer}
+.actions{display:flex;gap:5px}
+.pos-badge{display:inline-block;width:28px;height:28px;border-radius:7px;background:rgba(255,255,255,.07);color:var(--grey);font-size:12px;font-weight:700;text-align:center;line-height:28px}
+footer{text-align:center;margin-top:28px;font-size:11px;color:var(--grey)}
+footer span{color:var(--accent);font-weight:600}
+</style></head><body>
+<header>
+  <div class="hdr-brand"><div class="hdr-icon">T</div><strong style="font-size:14px">Question Manager</strong></div>
+  <a href="/admin" style="font-size:12px;color:var(--grey)">← Dashboard</a>
+</header>
+<div class="content">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}{% for cat,msg in messages %}<div class="flash flash-{{ cat }}">{{ msg }}</div>{% endfor %}{% endif %}
+  {% endwith %}
+
+  <div class="page-header">
+    <div>
+      <div class="page-title">{{ sec_info.name }}</div>
+      <div style="font-size:12px;color:var(--grey);margin-top:3px">{{ questions|length }} questions · Target: {{ sec_info.questions }}</div>
+    </div>
+    <a href="/admin/add_question?section={{ section }}" class="btn-primary">+ Add Question</a>
+  </div>
+
+  <div class="section-tabs">
+    {% for s in sections %}<a href="/admin/questions/{{ s.id }}" class="stab {% if s.id==section %}active{% endif %}">{{ s.name[:16] }}</a>{% endfor %}
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Pos</th><th>#</th><th>Question</th><th>Type</th><th>Options</th><th>Correct</th><th>Marks</th><th>Actions</th></tr></thead>
+      <tbody>
+        {% for q in questions %}
+        <tr>
+          <td><div class="pos-badge">{{ q.position }}</div></td>
+          <td style="color:var(--grey)">{{ q.id }}</td>
+          <td><div class="q-text" title="{{ q.question_text }}">{{ q.question_text }}</div>{% if q.question_image_path %}<span class="badge badge-blue" style="margin-top:4px;display:inline-block">📷 Image</span>{% endif %}</td>
+          <td><span class="badge {% if q.question_type=='mcq' %}badge-blue{% else %}badge-green{% endif %}">{{ q.question_type|upper }}</span></td>
+          <td style="color:var(--grey);font-size:11px;max-width:200px">
+            {% if q.question_type=='mcq' %}
+            <div>A: {{ (q.option_a or '')[:20] }}</div>
+            <div>B: {{ (q.option_b or '')[:20] }}</div>
+            {% endif %}
+          </td>
+          <td><span class="correct-badge">{{ q.correct_answer }}</span></td>
+          <td style="color:var(--accent);font-weight:700">{{ q.marks }}</td>
+          <td><div class="actions">
+            <a href="/admin/edit_question/{{ q.id }}" class="btn-sm btn-blue">Edit</a>
+            <form method="POST" action="/admin/delete_question/{{ q.id }}" style="display:inline" onsubmit="return confirm('Delete this question?')">
+              <button type="submit" class="btn-sm btn-red">Delete</button>
+            </form>
+          </div></td>
+        </tr>
+        {% else %}
+        <tr><td colspan="8" style="text-align:center;padding:28px;color:var(--grey)">No questions yet. <a href="/admin/add_question?section={{ section }}" style="color:var(--accent)">Add one now →</a></td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <footer>© 2026 TCS NQT Online Assessment Platform &nbsp;·&nbsp; Made By <span>KRUSHNA YEOLE</span> &nbsp;·&nbsp; All Rights Reserved</footer>
+</div>
+</body></html>

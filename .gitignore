@@ -1,0 +1,15 @@
+__pycache__/
+*.pyc
+*.pyo
+database.db
+.env
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+static/uploads/*.png
+static/uploads/*.jpg
+static/uploads/*.jpeg
+static/uploads/*.gif
+static/uploads/*.webp

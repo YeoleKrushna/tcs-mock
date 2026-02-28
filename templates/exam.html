@@ -1,0 +1,70 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>TCS NQT 2026 – Examination</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/css/style.css">
+</head><body>
+<div id="violationOverlay" class="overlay hidden"><div class="overlay-box warn"><div class="overlay-icon">⚠</div><h2>Violation Detected</h2><p id="violationMsg">Tab switching / fullscreen exit is not allowed.</p><div id="violationCount" class="violation-badge"></div><button class="btn-primary" onclick="dismissViolation()">I Understand – Resume Exam</button></div></div>
+<div id="autoSubmitOverlay" class="overlay hidden"><div class="overlay-box danger"><div class="overlay-icon">🚫</div><h2>Exam Auto-Submitted</h2><p>Your exam was automatically submitted due to repeated violations. This incident has been recorded.</p><button class="btn-primary" onclick="window.location='/result'">View Results</button></div></div>
+<div id="confirmSubmitOverlay" class="overlay hidden"><div class="overlay-box"><div class="overlay-icon">📋</div><h2>Submit Examination?</h2><p>Are you sure you want to submit? Please review all sections before submitting.</p><div id="submitSummary" style="margin:14px 0;text-align:left"></div><div style="display:flex;gap:10px;justify-content:center;margin-top:8px"><button class="btn-secondary" onclick="closeConfirmSubmit()">Go Back</button><button class="btn-danger" onclick="doFinalSubmit()">Yes, Submit Now</button></div></div></div>
+<div id="offlineBanner" class="offline-banner hidden">📡 Internet connection lost. Answers are saved. Reconnect to continue.</div>
+<header class="exam-header">
+  <div class="hdr-left"><div class="brand-chip">T</div><div><div class="exam-title">TCS NQT 2026 – Online Assessment</div><div class="exam-subtitle">Proctored Examination</div></div></div>
+  <div class="hdr-center"><div class="timer-wrap" id="timerWrap"><div class="timer-label" id="timerSectionName">Loading...</div><div class="timer-display" id="timerDisplay">--:--</div><div class="timer-bar-bg"><div class="timer-bar" id="timerBar"></div></div></div></div>
+  <div class="hdr-right"><div class="user-info"><div class="user-name">{{ user_name }}</div><div class="user-meta">Candidate</div></div><div class="cam-monitor"><video id="headerCam" autoplay muted playsinline></video><div class="cam-label"><span class="dot-blink"></span>Live Monitoring Active</div></div></div>
+</header>
+<div id="warnBanner" class="warn-banner hidden">⚠ Warning 1/2 – Violation recorded. Another violation will auto-submit your exam.</div>
+<div class="section-progress-bar" id="sectionProgressBar">
+  {% for s in sections %}<div class="spb-item" id="spb-{{ s.id }}" data-section="{{ s.id }}"><div class="spb-num">{{ loop.index }}</div><div class="spb-name">{{ s.name }}</div><div class="spb-meta">{{ s.questions }}Q · {{ s.time }}m</div></div>{% endfor %}
+</div>
+<div class="exam-layout">
+  <aside class="palette-panel">
+    <div class="palette-header">
+      <div class="palette-title" id="paletteTitle">Question Palette</div>
+      <div class="palette-legend">
+        <div class="leg-item"><span class="leg-dot answered"></span>Answered</div>
+        <div class="leg-item"><span class="leg-dot not-answered"></span>Not Answered</div>
+        <div class="leg-item"><span class="leg-dot marked"></span>Marked</div>
+        <div class="leg-item"><span class="leg-dot not-visited"></span>Not Visited</div>
+      </div>
+    </div>
+    <div class="palette-grid" id="paletteGrid"></div>
+    <div class="palette-stats" id="paletteStats">
+      <div class="stat-item"><span class="stat-num answered-num" id="statAnswered">0</span><span>Answered</span></div>
+      <div class="stat-item"><span class="stat-num not-answered-num" id="statNotAnswered">0</span><span>Not Ans.</span></div>
+      <div class="stat-item"><span class="stat-num marked-num" id="statMarked">0</span><span>Marked</span></div>
+    </div>
+    <button class="btn-submit-exam" onclick="showConfirmSubmit()">Submit Examination</button>
+  </aside>
+  <main class="question-area">
+    <div class="section-header" id="sectionHeader">
+      <div class="sec-tag" id="secTag">Section</div>
+      <div class="sec-qnum" id="secQnum">Question 1 of 25</div>
+    </div>
+    <div class="question-card" id="questionCard">
+      <div class="loading-spinner" id="loadingSpinner"><div class="spinner"></div><div>Loading questions...</div></div>
+      <div id="questionContent" class="hidden">
+        <div class="question-text" id="questionText"></div>
+        <div class="question-img-wrap hidden" id="questionImgWrap"><img id="questionImg" src="" alt="Question Image"></div>
+        <div id="mcqOptions" class="options-grid">
+          <label class="option-label" id="optA"><input type="radio" name="qopt" value="A"><span class="opt-letter">A</span><span class="opt-text" id="optTextA"></span></label>
+          <label class="option-label" id="optB"><input type="radio" name="qopt" value="B"><span class="opt-letter">B</span><span class="opt-text" id="optTextB"></span></label>
+          <label class="option-label" id="optC"><input type="radio" name="qopt" value="C"><span class="opt-letter">C</span><span class="opt-text" id="optTextC"></span></label>
+          <label class="option-label" id="optD"><input type="radio" name="qopt" value="D"><span class="opt-letter">D</span><span class="opt-text" id="optTextD"></span></label>
+        </div>
+        <div id="fillOptions" class="hidden"><div class="fill-label">Type your answer below:</div><input type="text" id="fillInput" class="fill-input" placeholder="Enter your answer..."></div>
+      </div>
+    </div>
+    <div class="nav-bar">
+      <div class="nav-left">
+        <button class="btn-nav btn-prev" id="btnPrev" onclick="goTo(-1)">← Previous</button>
+        <button class="btn-nav btn-mark" id="btnMark" onclick="markForReview()">🏳 Mark for Review</button>
+        <button class="btn-nav btn-clear" id="btnClear" onclick="clearResponse()">✕ Clear Response</button>
+      </div>
+      <div class="nav-right"><button class="btn-nav btn-next" id="btnNext" onclick="goTo(1)">Next →</button></div>
+    </div>
+  </main>
+</div>
+<script>const SECTIONS = {{ sections | tojson }};</script>
+<script src="/static/js/exam.js"></script>
+</body></html>

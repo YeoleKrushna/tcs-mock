@@ -1,0 +1,129 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Results – TCS NQT 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#0a1628;--blue:#1a56db;--accent:#00c2ff;--gold:#f0a500;--white:#fff;--grey:#8a99b3;--surface:#111d35;--border:#1e3256;--green:#10b981;--red:#ef4444}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Outfit',sans-serif;background:var(--navy);min-height:100vh;color:var(--white)}
+.grid-bg{position:fixed;inset:0;background-image:linear-gradient(rgba(26,86,219,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(26,86,219,.04) 1px,transparent 1px);background-size:60px 60px;pointer-events:none}
+header{background:rgba(10,22,40,.95);border-bottom:1px solid var(--border);padding:0 20px;height:56px;display:flex;align-items:center;gap:10px}
+.hdr-icon{width:32px;height:32px;background:linear-gradient(135deg,var(--blue),var(--accent));border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px}
+.hdr-title{font-size:15px;font-weight:700}
+.page-wrap{position:relative;z-index:1;max-width:820px;margin:0 auto;padding:36px 16px 60px}
+.result-hero{text-align:center;margin-bottom:40px}
+.result-icon{font-size:56px;margin-bottom:14px;animation:popIn .5s cubic-bezier(.34,1.56,.64,1)}
+@keyframes popIn{from{transform:scale(0)}to{transform:scale(1)}}
+.result-title{font-size:28px;font-weight:800;margin-bottom:6px}
+.result-name{font-size:14px;color:var(--grey)}.result-name span{color:var(--accent);font-weight:600}
+.autosub-warning{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);border-radius:10px;padding:14px 18px;margin-bottom:24px;font-size:13px;color:#f87171;text-align:center}
+.congrats-msg{background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.18);border-radius:10px;padding:18px;text-align:center;margin-bottom:24px}
+.congrats-msg p{font-size:13px;color:#6ee7b7;line-height:1.7}
+.score-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;margin-bottom:28px}
+.score-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center;position:relative;overflow:hidden}
+.score-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.sc-total::before{background:linear-gradient(90deg,var(--blue),var(--accent))}
+.sc-correct::before{background:linear-gradient(90deg,var(--green),#059669)}
+.sc-attempted::before{background:linear-gradient(90deg,var(--gold),#d97706)}
+.sc-violation::before{background:linear-gradient(90deg,var(--red),#dc2626)}
+.score-num{font-size:36px;font-weight:800;margin-bottom:3px}
+.score-label{font-size:11px;color:var(--grey);text-transform:uppercase;letter-spacing:.7px}
+.score-sub{font-size:10px;color:var(--grey);margin-top:3px}
+.section-breakdown{margin-bottom:28px}
+.sb-title{font-size:17px;font-weight:700;margin-bottom:14px}
+.sb-row{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 18px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between}
+.sb-name{font-size:13px;font-weight:600}
+.sb-bar{height:5px;background:rgba(255,255,255,.1);border-radius:3px;margin-top:7px;overflow:hidden;width:180px}
+.sb-bar-fill{height:100%;background:linear-gradient(90deg,var(--green),#059669);border-radius:3px;transition:width .8s ease}
+.sb-stats{display:flex;gap:20px}
+.sb-stat{text-align:center}.sb-stat-num{font-size:18px;font-weight:700}.sb-stat-lbl{font-size:10px;color:var(--grey)}
+.action-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.btn-logout{padding:11px 28px;background:transparent;border:1.5px solid var(--border);border-radius:9px;color:var(--grey);font-family:'Outfit',sans-serif;font-size:14px;font-weight:600;cursor:pointer;text-decoration:none;transition:all .2s}
+.btn-logout:hover{border-color:var(--accent);color:var(--white)}
+footer{text-align:center;margin-top:36px;font-size:11px;color:var(--grey)}
+footer span{color:var(--accent);font-weight:600}
+</style></head><body>
+<div class="grid-bg"></div>
+<header><div class="hdr-icon">T</div><div class="hdr-title">TCS NQT 2026 – Examination Completed</div></header>
+<div class="page-wrap">
+  <div class="result-hero">
+    <div class="result-icon">{% if auto_submitted %}🚫{% else %}🎉{% endif %}</div>
+    <div class="result-title">{% if auto_submitted %}Exam Auto-Submitted{% else %}Exam Completed!{% endif %}</div>
+    <div class="result-name">Candidate: <span>{{ user_name }}</span></div>
+  </div>
+  {% if auto_submitted %}
+  <div class="autosub-warning">🚫 Your exam was automatically submitted due to repeated proctoring violations. This incident has been recorded and reported.</div>
+  {% else %}
+  <div class="congrats-msg"><p>Thank you for completing the TCS NQT 2026 assessment. Your responses have been recorded successfully. Results will be communicated via email within the stipulated timeframe.</p></div>
+  {% endif %}
+  <div class="score-grid">
+    <div class="score-card sc-total"><div class="score-num" style="color:var(--accent)">{{ total }}</div><div class="score-label">Total Questions</div></div>
+    <div class="score-card sc-correct"><div class="score-num" style="color:var(--green)">{{ correct }}</div><div class="score-label">Correct</div><div class="score-sub">{{ "%.1f"|format(correct/total*100 if total else 0) }}% accuracy</div></div>
+    <div class="score-card sc-attempted"><div class="score-num" style="color:var(--gold)">{{ attempted }}</div><div class="score-label">Attempted</div><div class="score-sub">{{ total - attempted }} skipped</div></div>
+    <div class="score-card sc-violation"><div class="score-num" style="color:{% if violations > 0 %}var(--red){% else %}var(--green){% endif %}">{{ violations }}</div><div class="score-label">Violations</div><div class="score-sub">{% if violations == 0 %}Clean session{% else %}Recorded{% endif %}</div></div>
+  </div>
+  <div class="section-breakdown">
+    <div class="sb-title">Section-wise Performance</div>
+    {% for s in sections %}{% set sc = section_scores.get(s.id, {'correct':0,'total':0}) %}{% set pct = (sc.correct / sc.total * 100) if sc.total > 0 else 0 %}
+    <div class="sb-row">
+      <div><div class="sb-name">{{ s.name }}</div><div class="sb-bar"><div class="sb-bar-fill" style="width:{{ pct }}%"></div></div></div>
+      <div class="sb-stats">
+        <div class="sb-stat"><div class="sb-stat-num" style="color:var(--green)">{{ sc.correct }}</div><div class="sb-stat-lbl">Correct</div></div>
+        <div class="sb-stat"><div class="sb-stat-num" style="color:var(--grey)">{{ sc.total }}</div><div class="sb-stat-lbl">Total</div></div>
+        <div class="sb-stat"><div class="sb-stat-num" style="color:var(--accent)">{{ "%.0f"|format(pct) }}%</div><div class="sb-stat-lbl">Score</div></div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  <div class="action-btns"><a href="/logout" class="btn-logout">Logout</a></div>
+  <hr style="margin:40px 0;border-color:#1e3256;">
+
+<h2 style="margin-bottom:20px;">Detailed Review</h2>
+
+{% for section, questions in section_details.items() %}
+  <div style="margin-bottom:40px;">
+    <h3 style="color:#00c2ff;margin-bottom:15px;">
+      {{ section|title }} Section
+    </h3>
+
+    {% for q in questions %}
+      <div style="background:#111d35;
+                  border:1px solid #1e3256;
+                  border-radius:10px;
+                  padding:15px;
+                  margin-bottom:15px;">
+
+        <p><strong>Q{{ loop.index }}:</strong> {{ q.question_text }}</p>
+
+        <p>
+          <strong>Your Answer:</strong>
+          {% if q.selected_answer %}
+              {{ q.selected_answer }}
+          {% else %}
+              Not Attempted
+          {% endif %}
+        </p>
+
+        <p>
+          <strong>Correct Answer:</strong>
+          {{ q.correct_answer }}
+        </p>
+
+        {% if q.selected_answer == q.correct_answer %}
+            <p style="color:#10b981;"><strong>✔ Correct</strong></p>
+        {% elif q.selected_answer %}
+            <p style="color:#ef4444;"><strong>✘ Wrong</strong></p>
+        {% endif %}
+
+      </div>
+    {% endfor %}
+  </div>
+{% endfor %}
+  <footer>© 2026 TCS NQT Online Assessment Platform &nbsp;·&nbsp; Made By <span>KRUSHNA YEOLE</span> &nbsp;·&nbsp; All Rights Reserved</footer>
+</div>
+<script>
+history.pushState(null,null,window.location.href);
+window.onpopstate=function(){history.pushState(null,null,window.location.href)};
+if(document.fullscreenElement) document.exitFullscreen().catch(()=>{});
+</script>
+</body></html>

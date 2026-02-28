@@ -1,0 +1,76 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Result – {{ candidate.name }}</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#0a1628;--blue:#1a56db;--accent:#00c2ff;--gold:#f0a500;--white:#fff;--grey:#8a99b3;--surface:#111d35;--border:#1e3256;--green:#10b981;--red:#ef4444}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Outfit',sans-serif;background:var(--navy);min-height:100vh;color:var(--white)}
+header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 20px;height:54px;display:flex;align-items:center;justify-content:space-between}
+.hdr-icon{width:32px;height:32px;background:linear-gradient(135deg,var(--blue),var(--accent));border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px}
+.content{max-width:1000px;margin:0 auto;padding:24px 16px 60px}
+.cand-header{display:flex;align-items:flex-start;justify-content:space-between;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:20px;flex-wrap:wrap;gap:14px}
+.cand-name{font-size:22px;font-weight:800;margin-bottom:4px}
+.cand-meta{font-size:12px;color:var(--grey);display:flex;flex-wrap:wrap;gap:12px}
+.cand-meta span{display:flex;align-items:center;gap:4px}
+.score-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-bottom:20px}
+.sc{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;text-align:center}
+.sc-num{font-size:28px;font-weight:800;line-height:1}
+.sc-lbl{font-size:10px;color:var(--grey);margin-top:3px;text-transform:uppercase}
+.sec-scores{margin-bottom:20px}
+.ss-row{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:12px 16px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between}
+.ss-name{font-size:13px;font-weight:600}
+.ss-stats{display:flex;gap:16px}
+.ss-stat{text-align:center}.ss-num{font-size:16px;font-weight:700}.ss-lbl{font-size:10px;color:var(--grey)}
+.badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600}
+.badge-green{background:rgba(16,185,129,.15);color:var(--green)}
+.badge-red{background:rgba(239,68,68,.12);color:#f87171}
+.badge-grey{background:rgba(255,255,255,.06);color:var(--grey)}
+footer{text-align:center;margin-top:28px;font-size:11px;color:var(--grey)}
+footer span{color:var(--accent);font-weight:600}
+</style></head><body>
+<header>
+  <div style="display:flex;align-items:center;gap:10px"><div class="hdr-icon">T</div><strong style="font-size:14px">Exam Result</strong></div>
+  <a href="/admin" style="font-size:12px;color:var(--grey);text-decoration:none">← Dashboard</a>
+</header>
+<div class="content">
+  <div class="cand-header">
+    <div>
+      <div class="cand-name">{{ candidate.name }}</div>
+      <div class="cand-meta">
+        <span>✉ {{ candidate.email }}</span>
+        {% if candidate.college %}<span>🏫 {{ candidate.college }}</span>{% endif %}
+        {% if candidate.roll_no %}<span>🎓 {{ candidate.roll_no }}</span>{% endif %}
+        {% if candidate.phone %}<span>📞 {{ candidate.phone }}</span>{% endif %}
+      </div>
+    </div>
+    <div>
+      {% if viol and viol.auto_submitted %}<span class="badge badge-red">Auto-Submitted</span>
+      {% elif sess and sess.submitted %}<span class="badge badge-green">Submitted</span>
+      {% else %}<span class="badge badge-grey">Not Submitted</span>{% endif %}
+      {% if viol %}<div style="font-size:11px;color:var(--grey);margin-top:5px">Violations: {{ viol.violation_count }}</div>{% endif %}
+      {% if sess and sess.submitted_at %}<div style="font-size:11px;color:var(--grey);margin-top:3px">{{ sess.submitted_at.strftime('%d %b %Y, %H:%M') if sess.submitted_at else '' }}</div>{% endif %}
+    </div>
+  </div>
+  <div class="score-grid">
+    <div class="sc"><div class="sc-num" style="color:var(--accent)">{{ total }}</div><div class="sc-lbl">Total</div></div>
+    <div class="sc"><div class="sc-num" style="color:var(--green)">{{ correct }}</div><div class="sc-lbl">Correct</div></div>
+    <div class="sc"><div class="sc-num" style="color:var(--gold)">{{ attempted }}</div><div class="sc-lbl">Attempted</div></div>
+    <div class="sc"><div class="sc-num" style="color:var(--accent)">{{ "%.1f"|format(correct/total*100 if total else 0) }}%</div><div class="sc-lbl">Accuracy</div></div>
+    <div class="sc"><div class="sc-num" style="color:{% if viol and viol.violation_count %}var(--red){% else %}var(--green){% endif %}">{{ viol.violation_count if viol else 0 }}</div><div class="sc-lbl">Violations</div></div>
+  </div>
+  <div class="sec-scores">
+    {% for s in sections %}{% set sc = section_scores.get(s.id, {'correct':0,'total':0}) %}{% set pct = (sc.correct/sc.total*100) if sc.total>0 else 0 %}
+    <div class="ss-row">
+      <div class="ss-name">{{ s.name }}</div>
+      <div class="ss-stats">
+        <div class="ss-stat"><div class="ss-num" style="color:var(--green)">{{ sc.correct }}</div><div class="ss-lbl">Correct</div></div>
+        <div class="ss-stat"><div class="ss-num" style="color:var(--grey)">{{ sc.total }}</div><div class="ss-lbl">Total</div></div>
+        <div class="ss-stat"><div class="ss-num" style="color:var(--accent)">{{ "%.0f"|format(pct) }}%</div><div class="ss-lbl">Score</div></div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  <footer>© 2026 TCS NQT Online Assessment Platform &nbsp;·&nbsp; Made By <span>KRUSHNA YEOLE</span> &nbsp;·&nbsp; All Rights Reserved</footer>
+</div>
+</body></html>

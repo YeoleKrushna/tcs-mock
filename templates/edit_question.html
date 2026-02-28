@@ -1,0 +1,104 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Edit Question – TCS NQT Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#0a1628;--blue:#1a56db;--accent:#00c2ff;--white:#fff;--grey:#8a99b3;--surface:#111d35;--border:#1e3256;--green:#10b981;--gold:#f0a500}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Outfit',sans-serif;background:var(--navy);min-height:100vh;color:var(--white)}
+header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 20px;height:54px;display:flex;align-items:center;justify-content:space-between}
+.hdr-icon{width:32px;height:32px;background:linear-gradient(135deg,var(--blue),var(--accent));border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px}
+.wrap{max-width:700px;margin:28px auto;padding:0 16px 60px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:28px}
+h1{font-size:20px;font-weight:800;margin-bottom:20px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+@media(max-width:540px){.form-row{grid-template-columns:1fr}}
+.form-group{display:flex;flex-direction:column;gap:5px}
+.form-group.full{grid-column:1/-1}
+label{font-size:10px;font-weight:600;color:var(--grey);text-transform:uppercase;letter-spacing:.6px}
+input,select,textarea{padding:10px 12px;background:var(--navy);border:1.5px solid var(--border);border-radius:8px;color:var(--white);font-family:'Outfit',sans-serif;font-size:13px;outline:none;transition:border-color .2s}
+input:focus,select:focus,textarea:focus{border-color:var(--blue)}
+textarea{resize:vertical;min-height:70px}
+.sec-div{font-size:10px;font-weight:700;color:var(--grey);text-transform:uppercase;letter-spacing:.7px;margin:14px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.type-toggle{display:flex;gap:8px;margin-bottom:14px}
+.type-btn{flex:1;padding:8px;background:var(--navy);border:1.5px solid var(--border);border-radius:7px;color:var(--grey);font-family:'Outfit',sans-serif;font-size:12px;cursor:pointer;transition:all .2s}
+.type-btn.active{border-color:var(--blue);color:var(--accent);background:rgba(26,86,219,.1)}
+.current-img{margin-top:8px;font-size:11px;color:var(--gold)}
+.btn-save{padding:11px 28px;background:linear-gradient(135deg,var(--green),#059669);border:none;border-radius:9px;color:#fff;font-family:'Outfit',sans-serif;font-size:14px;font-weight:700;cursor:pointer;margin-top:18px}
+footer{text-align:center;margin-top:24px;font-size:11px;color:var(--grey)}
+footer span{color:var(--accent);font-weight:600}
+</style></head><body>
+<header>
+  <div style="display:flex;align-items:center;gap:10px"><div class="hdr-icon">T</div><strong style="font-size:14px">Edit Question #{{ q.id }}</strong></div>
+  <a href="/admin/questions/{{ q.section_name }}" style="font-size:12px;color:var(--grey);text-decoration:none">← Back</a>
+</header>
+<div class="wrap">
+  <div class="card">
+    <form method="POST" enctype="multipart/form-data">
+      <input type="hidden" name="existing_image" value="{{ q.question_image_path or '' }}">
+      <div class="sec-div">Question Details</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Section</label>
+          <select name="section" required>
+            {% for s in sections %}<option value="{{ s.id }}" {% if s.id==q.section_name %}selected{% endif %}>{{ s.name }}</option>{% endfor %}
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Position</label>
+          <input type="number" name="position" value="{{ q.position }}" min="1">
+        </div>
+      </div>
+      <div class="sec-div">Type</div>
+      <input type="hidden" name="question_type" id="qTypeInput" value="{{ q.question_type }}">
+      <div class="type-toggle">
+        <button type="button" class="type-btn {% if q.question_type=='mcq' %}active{% endif %}" onclick="setType('mcq',this)">MCQ</button>
+        <button type="button" class="type-btn {% if q.question_type=='fill' %}active{% endif %}" onclick="setType('fill',this)">Fill in the Blank</button>
+      </div>
+      <div class="form-row">
+        <div class="form-group full"><label>Question Text</label><textarea name="question_text" rows="3">{{ q.question_text or '' }}</textarea></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Question Image (replace)</label>
+          <input type="file" name="question_image" accept="image/*">
+          {% if q.question_image_path %}<div class="current-img">Current: {{ q.question_image_path }}</div>{% endif %}
+        </div>
+        <div class="form-group"><label>Marks</label><input type="number" name="marks" value="{{ q.marks or 1 }}" min="1" max="5"></div>
+      </div>
+      <div id="mcqSection" {% if q.question_type=='fill' %}style="display:none"{% endif %}>
+        <div class="sec-div">Answer Options</div>
+        <div class="form-row">
+          <div class="form-group"><label>Option A</label><input type="text" name="option_a" value="{{ q.option_a or '' }}"></div>
+          <div class="form-group"><label>Option B</label><input type="text" name="option_b" value="{{ q.option_b or '' }}"></div>
+          <div class="form-group"><label>Option C</label><input type="text" name="option_c" value="{{ q.option_c or '' }}"></div>
+          <div class="form-group"><label>Option D</label><input type="text" name="option_d" value="{{ q.option_d or '' }}"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Correct Answer</label>
+            <select name="correct_answer">
+              {% for opt in ['A','B','C','D'] %}<option value="{{ opt }}" {% if q.correct_answer==opt %}selected{% endif %}>{{ opt }}</option>{% endfor %}
+            </select>
+          </div>
+        </div>
+      </div>
+      <div id="fillSection" {% if q.question_type!='fill' %}style="display:none"{% endif %}>
+        <div class="sec-div">Correct Answer</div>
+        <div class="form-group"><label>Exact Answer Text</label><input type="text" name="correct_answer_fill" value="{{ q.correct_answer or '' }}"></div>
+      </div>
+      <button type="submit" class="btn-save">Save Changes →</button>
+    </form>
+  </div>
+  <footer>© 2026 TCS NQT Online Assessment Platform &nbsp;·&nbsp; Made By <span>KRUSHNA YEOLE</span> &nbsp;·&nbsp; All Rights Reserved</footer>
+</div>
+<script>
+function setType(type,btn){
+  document.getElementById('qTypeInput').value=type;
+  document.querySelectorAll('.type-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('mcqSection').style.display=type==='mcq'?'block':'none';
+  document.getElementById('fillSection').style.display=type==='fill'?'block':'none';
+}
+</script>
+</body></html>
