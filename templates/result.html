@@ -95,6 +95,39 @@ footer span{color:var(--accent);font-weight:600}
 
         <p><strong>Q{{ loop.index }}:</strong> {{ q.question_text }}</p>
 
+        <!-- OPTIONS START -->
+        <div style="margin-top:10px;margin-bottom:10px;line-height:1.8;">
+
+          <div style="{% if q.correct_answer == 'A' %}color:#10b981;font-weight:600;{% endif %}">
+            A. {{ q.option_a }}
+            {% if q.selected_answer == 'A' %}
+              <span style="color:#00c2ff;"> (Your Answer)</span>
+            {% endif %}
+          </div>
+
+          <div style="{% if q.correct_answer == 'B' %}color:#10b981;font-weight:600;{% endif %}">
+            B. {{ q.option_b }}
+            {% if q.selected_answer == 'B' %}
+              <span style="color:#00c2ff;"> (Your Answer)</span>
+            {% endif %}
+          </div>
+
+          <div style="{% if q.correct_answer == 'C' %}color:#10b981;font-weight:600;{% endif %}">
+            C. {{ q.option_c }}
+            {% if q.selected_answer == 'C' %}
+              <span style="color:#00c2ff;"> (Your Answer)</span>
+            {% endif %}
+          </div>
+
+          <div style="{% if q.correct_answer == 'D' %}color:#10b981;font-weight:600;{% endif %}">
+            D. {{ q.option_d }}
+            {% if q.selected_answer == 'D' %}
+              <span style="color:#00c2ff;"> (Your Answer)</span>
+            {% endif %}
+          </div>
+
+        </div>
+
         <p>
           <strong>Your Answer:</strong>
           {% if q.selected_answer %}
