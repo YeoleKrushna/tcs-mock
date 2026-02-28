@@ -734,13 +734,11 @@ def admin_view_result(uid):
                            viol=viol, sess=sess, section_scores=section_scores,
                            sections=EXAM_SECTIONS, user_name=session['user_name'])
 
-if __name__ == '__main__':
-    init_db()
-    port = int(os.environ.get('PORT', 5000))
-    app.run(debug=False, host='0.0.0.0', port=port)
 
-# ── Auto-init DB when loaded by gunicorn ──
-try:
-    init_db()
-except Exception as _e:
-    print(f"[Startup] DB init note: {_e}")
+
+# ── Initialize DB when app loads (Gunicorn safe) ──
+with app.app_context():
+    try:
+        init_db()
+    except Exception as e:
+        print(f"[Startup] DB init note: {e}")
